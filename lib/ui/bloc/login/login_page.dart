@@ -48,7 +48,7 @@ class _LoginPageBlocState extends State<LoginPageBloc> {
       listener: (context, state) {
         if (state is LoginSuccess) {
           print("Login successful!");
-          Navigator.pushNamed(context, '/list');
+          Navigator.pushReplacementNamed(context, '/list');
         }
         if (state is LoginFailure) {
           print("Login failed: ${state.error}");

@@ -1,3 +1,3 @@
-<NEPTUN KÓD>
-<bloc/provider>
+<VU21TN>
+<bloc>
 <Házi feladat értékelése>

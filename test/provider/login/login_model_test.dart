@@ -142,7 +142,7 @@ void main() {
         );
         var options = RequestOptions(path: '/login');
         completer.completeError(
-          DioError(
+          DioException(
             requestOptions: options,
             response: Response(
               data: {'message': error},

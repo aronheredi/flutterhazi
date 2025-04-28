@@ -31,8 +31,8 @@ void main() {
     await GetIt.I.reset();
   });
 
-  const _correctEmail = 'a@a.com';
-  const _correctPassword = '12345678';
+  const correctEmail = 'a@a.com';
+  const correctPassword = '12345678';
   group('Token is registered correctly for network requests [7]', () {
     var tokens = ['TEST_TOKEN_1', 'TEST_TOKEN_2'];
     for (var token in tokens) {
@@ -91,11 +91,11 @@ void main() {
             await tester.pumpAndSettle();
             await tester.enterText(
               find.byType(TextField).first,
-              _correctEmail,
+              correctEmail,
             );
             await tester.enterText(
               find.byType(TextField).last,
-              _correctPassword,
+              correctPassword,
             );
             await tester.tap(find.bySubtype<ButtonStyleButton>());
             await tester.pumpAndSettle();

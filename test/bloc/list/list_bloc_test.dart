@@ -89,7 +89,7 @@ void main() {
           ).thenAnswer(
                 (_) async {
               var options = RequestOptions(path: '/users');
-              throw DioError(
+              throw DioException(
                 requestOptions: options,
                 response: Response(
                   data: {'message': error},

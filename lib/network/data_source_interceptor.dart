@@ -38,7 +38,7 @@ class DataSourceInterceptor extends Interceptor {
       var token = options.headers['Authorization'];
       if (token != 'Bearer $_accessToken') {
         handler.reject(
-          DioError(
+          DioException(
             requestOptions: options,
             type: DioExceptionType.badResponse,
             response: Response(requestOptions: options, data: {

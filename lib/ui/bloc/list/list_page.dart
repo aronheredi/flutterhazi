@@ -6,22 +6,23 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ListPageBloc extends StatefulWidget {
-  const ListPageBloc({super.key});
+  final String? token; // <--- Add this
+
+  const ListPageBloc({super.key, this.token});
 
   @override
   State<ListPageBloc> createState() => _ListPageBlocState();
 }
 
 class _ListPageBlocState extends State<ListPageBloc> {
-  final sharedPreferences = GetIt.I<SharedPreferences>();
-  ListBloc? loginBloc;
-
+  ListBloc? listBloc;
+  
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      loginBloc = BlocProvider.of<ListBloc>(context);
-      loginBloc?.add(ListLoadEvent());
+      listBloc = BlocProvider.of<ListBloc>(context);
+      listBloc?.add(ListLoadEvent());
     });
   }
 
@@ -55,10 +56,12 @@ class _ListPageBlocState extends State<ListPageBloc> {
                   IconButton(
                     icon: const Icon(Icons.logout),
                     onPressed: () {
+                        final sharedPreferences = GetIt.I<SharedPreferences>();
+
                       sharedPreferences.remove('token');
                       sharedPreferences.remove('email');
                       sharedPreferences.remove('password');
-                      Navigator.pushReplacementNamed(context, '/login');
+                      Navigator.pushReplacementNamed(context, '/');
                     },
                   ),
                 ],
@@ -68,7 +71,7 @@ class _ListPageBlocState extends State<ListPageBloc> {
                 itemBuilder: (context, index) {
                   final user = state.users[index];
                   return Padding(
-                    padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                    padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -99,6 +102,8 @@ class _ListPageBlocState extends State<ListPageBloc> {
                 IconButton(
                   icon: const Icon(Icons.logout),
                   onPressed: () {
+                      final sharedPreferences = GetIt.I<SharedPreferences>();
+
                     sharedPreferences.remove('token');
                     sharedPreferences.remove('email');
                     sharedPreferences.remove('password');

@@ -95,7 +95,7 @@ void main() {
         var loadRequest = model.loadUsers();
         expect(model.isLoading, true);
         completer.completeError(
-          DioError(
+          DioException(
             requestOptions: options,
             response: Response(
               data: {'message': error},

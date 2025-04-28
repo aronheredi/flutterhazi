@@ -159,7 +159,7 @@ void main() {
           ).thenAnswer(
             (_) async {
               var options = RequestOptions(path: '/login');
-              throw DioError(
+              throw DioException(
                 requestOptions: options,
                 response: Response(
                   data: {'message': error},

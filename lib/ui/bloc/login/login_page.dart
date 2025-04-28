@@ -17,8 +17,8 @@ class _LoginPageBlocState extends State<LoginPageBloc> {
   final _formKey = GlobalKey<FormState>();
   String _email = '';
   String _password = '';
-  String? _emailError = null;
-  String? _passwordError = null;
+  String? _emailError;
+  String? _passwordError;
   bool? _rememberMe = false;
   bool _isLoading = false;
   LoginBloc? loginBloc;
@@ -35,7 +35,7 @@ class _LoginPageBlocState extends State<LoginPageBloc> {
   @override
   Widget build(BuildContext context) {
     loginBloc = BlocProvider.of<LoginBloc>(context);
-    void _submit() {
+    void submit() {
       if (!_formKey.currentState!.validate()) return;
       _formKey.currentState!.save();
       print('Email: $_email');
@@ -91,12 +91,14 @@ class _LoginPageBlocState extends State<LoginPageBloc> {
                             setState(() {
                               _emailError = "Kérjük, adja meg az email címét";
                             });
+                            return "Kérjük, adja meg az email címét";
                           }
                           if (!value!.contains('@')) {
-                            setState(() {
-                              _emailError = "Helytelen email formátum";
-                            });
+                            
+                            return "Helytelen email formátum";
                           }
+                          _emailError = null;
+
                           return null;
                         },
                         onSaved: (value) => setState(() {
@@ -110,27 +112,28 @@ class _LoginPageBlocState extends State<LoginPageBloc> {
                       TextFormField(
                         enabled: !_isLoading,
                         decoration: InputDecoration(
-                            labelText: 'Jelszó', errorText: _passwordError),
+                            labelText: 'Jelszó',errorText: _passwordError ),
                         obscureText: true,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            setState(() {
-                              _passwordError = "Kérjük, adja meg a jelszót";
-                            });
+                            
+                            return "Kérjük, adja meg a jelszót";
                           }
                           if (value!.length < 6) {
-                            setState(() {
-                              _passwordError =
-                                  "A jelszónak legalább 6 karakter hosszúnak kell lennie";
-                            });
+                            
+                            return "A jelszónak legalább 6 karakter hosszúnak kell lennie";
                           }
+                          _passwordError = null;
+
                           return null;
                         },
                         onSaved: (value) =>
                             {setState(() => _password = value!)},
                         onChanged: (value) => setState(() {
                           _passwordError = null;
+
                         }),
+                        
                       ),
                       const SizedBox(height: 10),
                       Row(
@@ -140,6 +143,7 @@ class _LoginPageBlocState extends State<LoginPageBloc> {
                             children: [
                               Checkbox(
                                 value: _rememberMe,
+                                
                                 onChanged: (value) {
                                   setState(() {
                                     if (_isLoading) return;
@@ -154,7 +158,7 @@ class _LoginPageBlocState extends State<LoginPageBloc> {
                           ElevatedButton(
                             onPressed: () {
                               if (_isLoading) return;
-                              _submit();
+                              submit();
                             },
                             child: const Text('Login'),
                           ),

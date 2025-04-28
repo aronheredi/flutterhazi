@@ -90,31 +90,31 @@ void main() {
   });
 
   group('Has correct network communication', () {
-    const _testToken = 'TEST_TOKEN';
-    final _testUsers = [
+    const testToken = 'TEST_TOKEN';
+    final testUsers = [
       for (int i = 0; i < 10; i++) UserItem('Test User $i', 'Test Image $i'),
     ];
-    const _correctEmail = 'login@gmail.com';
-    const _correctPassword = 'password';
+    const correctEmail0 = 'login@gmail.com';
+    const correctPassword0 = 'password';
     setUp(() async {
       when(
         () => GetIt.I<Dio>().post(
           '/login',
           data: {
-            'email': _correctEmail,
-            'password': _correctPassword,
+            'email': correctEmail0,
+            'password': correctPassword0,
           },
         ),
       ).thenAnswer(
         (_) async => Response(
-          data: {'token': _testToken},
+          data: {'token': testToken},
           requestOptions: RequestOptions(path: '/login'),
         ),
       );
       when(() => GetIt.I<Dio>().get('/users')).thenAnswer(
         (_) async => Response(
           data: [
-            for (var user in _testUsers)
+            for (var user in testUsers)
               {
                 'name': user.name,
                 'avatarUrl': user.avatarUrl,
@@ -142,11 +142,11 @@ void main() {
             await tester.pumpAndSettle();
             await tester.enterText(
               find.byType(TextField).first,
-              _correctEmail,
+              correctEmail0,
             );
             await tester.enterText(
               find.byType(TextField).last,
-              _correctPassword,
+              correctPassword0,
             );
             await tester.tap(find.bySubtype<Checkbox>());
             await tester.tap(find.bySubtype<ButtonStyleButton>());
@@ -164,7 +164,7 @@ void main() {
                 .captured
                 .first as String;
             verify(() =>
-                GetIt.I<SharedPreferences>().setString(tokenKey, _testToken));
+                GetIt.I<SharedPreferences>().setString(tokenKey, testToken));
           },
         ),
       );
@@ -173,7 +173,7 @@ void main() {
           when(() => GetIt.I<SharedPreferences>().containsKey(any()))
               .thenReturn(true);
           when(() => GetIt.I<SharedPreferences>().getString(any()))
-              .thenReturn(_testToken);
+              .thenReturn(testToken);
         });
 
         testWidgets(

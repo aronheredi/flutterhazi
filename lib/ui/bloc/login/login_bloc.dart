@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
@@ -14,6 +13,9 @@ part 'login_state.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc() : super(LoginForm()) {
     on<LoginSubmitEvent>((event, emit) async {
+      if(state is LoginLoading) {
+        return;
+      }
       print("LoginSubmitEvent started");
       final dio = GetIt.I<Dio>();
       final sharedPreferences = GetIt.I<SharedPreferences>();
@@ -23,6 +25,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       try {
         print("Making request");
+        
         final response = await dio.post('/login', data: {
           'email': event.email,
           'password': event.password,
@@ -31,13 +34,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         if (response.data['token'] != null) {
           final token = response.data['token'];
           print("Token: $token");
-          if (event.rememberMe) {
-            sharedPreferences.setString("email", event.email);
-            sharedPreferences.setString("password", event.password);
+          if(event.rememberMe){
+            sharedPreferences.setString('token', token);
+
           }
-          await sharedPreferences.setString('token', token);
+
+          
           emit(LoginSuccess());
           emit(LoginForm());
+          
         } else {
           print("No token found");
           emit(LoginFailure('Hiba a bejelentkezés során'));
@@ -45,16 +50,17 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       } on DioException catch (dioError) {
         emit(LoginFailure(dioError.response?.data['message'] ??
             'Hiba a bejelentkezés során'));
+            emit(LoginForm());
       }
     });
     on<LoginAutoLoginEvent>((event, emit) async {
       final sharedPreferences = GetIt.I<SharedPreferences>();
-
-      final email = sharedPreferences.getString('email');
-      final password = sharedPreferences.getString('password');
-      if (email != null && password != null) {
-        add(LoginSubmitEvent(email, password, true));
-      }
+      final token = sharedPreferences.getString('token');
+      if (token != null) {
+        emit(LoginSuccess());
+        
+      } 
+      
     });
   }
 }

@@ -40,7 +40,7 @@ Future configureCustomDependencies() async {}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
+  
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -53,6 +53,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Flutter Demo',
         routes: {
+          
           '/login': (context) => const LoginPageBloc(),
           '/list': (context) => const ListPageBloc(),
         },

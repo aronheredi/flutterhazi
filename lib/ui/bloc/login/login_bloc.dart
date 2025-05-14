@@ -1,4 +1,3 @@
-
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
@@ -13,7 +12,7 @@ part 'login_state.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc() : super(LoginForm()) {
     on<LoginSubmitEvent>((event, emit) async {
-      if(state is LoginLoading) {
+      if (state is LoginLoading) {
         return;
       }
       print("LoginSubmitEvent started");
@@ -25,7 +24,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       try {
         print("Making request");
-        
+
         final response = await dio.post('/login', data: {
           'email': event.email,
           'password': event.password,
@@ -34,15 +33,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         if (response.data['token'] != null) {
           final token = response.data['token'];
           print("Token: $token");
-          if(event.rememberMe){
+          if (event.rememberMe) {
             sharedPreferences.setString('token', token);
-
           }
 
-          
-          emit(LoginSuccess());
+          emit(LoginSuccess(token: token));
           emit(LoginForm());
-          
         } else {
           print("No token found");
           emit(LoginFailure('Hiba a bejelentkezés során'));
@@ -50,17 +46,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       } on DioException catch (dioError) {
         emit(LoginFailure(dioError.response?.data['message'] ??
             'Hiba a bejelentkezés során'));
-            emit(LoginForm());
+        emit(LoginForm());
       }
     });
     on<LoginAutoLoginEvent>((event, emit) async {
       final sharedPreferences = GetIt.I<SharedPreferences>();
       final token = sharedPreferences.getString('token');
       if (token != null) {
-        emit(LoginSuccess());
-        
-      } 
-      
+        emit(LoginSuccess(token: token));
+      }
     });
   }
 }

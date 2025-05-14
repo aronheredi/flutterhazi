@@ -6,9 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ListPageBloc extends StatefulWidget {
-  final String? token; // <--- Add this
-
-  const ListPageBloc({super.key, this.token});
+  const ListPageBloc({super.key});
 
   @override
   State<ListPageBloc> createState() => _ListPageBlocState();
@@ -16,13 +14,13 @@ class ListPageBloc extends StatefulWidget {
 
 class _ListPageBlocState extends State<ListPageBloc> {
   ListBloc? listBloc;
-  
+
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      listBloc = BlocProvider.of<ListBloc>(context);
-      listBloc?.add(ListLoadEvent());
+      context.read<ListBloc>().add(ListLoadEvent());
     });
   }
 
@@ -49,6 +47,7 @@ class _ListPageBlocState extends State<ListPageBloc> {
             );
           }
           if (state is ListLoaded) {
+            print("List loaded: ${state.users}");
             return Scaffold(
               appBar: AppBar(
                 title: const Text('List Page'),
@@ -56,7 +55,7 @@ class _ListPageBlocState extends State<ListPageBloc> {
                   IconButton(
                     icon: const Icon(Icons.logout),
                     onPressed: () {
-                        final sharedPreferences = GetIt.I<SharedPreferences>();
+                      final sharedPreferences = GetIt.I<SharedPreferences>();
 
                       sharedPreferences.remove('token');
                       sharedPreferences.remove('email');
@@ -71,7 +70,8 @@ class _ListPageBlocState extends State<ListPageBloc> {
                 itemBuilder: (context, index) {
                   final user = state.users[index];
                   return Padding(
-                    padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
+                    padding: const EdgeInsets.only(
+                        left: 20.0, right: 20.0, bottom: 20.0),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -102,7 +102,7 @@ class _ListPageBlocState extends State<ListPageBloc> {
                 IconButton(
                   icon: const Icon(Icons.logout),
                   onPressed: () {
-                      final sharedPreferences = GetIt.I<SharedPreferences>();
+                    final sharedPreferences = GetIt.I<SharedPreferences>();
 
                     sharedPreferences.remove('token');
                     sharedPreferences.remove('email');

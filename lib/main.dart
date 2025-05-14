@@ -40,7 +40,7 @@ Future configureCustomDependencies() async {}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -53,9 +53,14 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Flutter Demo',
         routes: {
-          
           '/login': (context) => const LoginPageBloc(),
-          '/list': (context) => const ListPageBloc(),
+          '/list': (context) {
+            final token = ModalRoute.of(context)!.settings.arguments as String;
+            return BlocProvider<ListBloc>(
+              create: (context) => ListBloc(token: token),
+              child: const ListPageBloc(),
+            );
+          },
         },
         theme: ThemeData(
           primarySwatch: Colors.blue,

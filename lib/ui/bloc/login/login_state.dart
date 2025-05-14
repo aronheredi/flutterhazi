@@ -14,13 +14,15 @@ class LoginLoading extends LoginState {
 }
 
 class LoginSuccess extends LoginState {
+  final String? token;
+  LoginSuccess({this.token});
+
   @override
   List<Object?> get props => [];
 }
 
 class LoginFailure extends LoginState {
   final String error;
-
   LoginFailure(this.error);
 
   @override

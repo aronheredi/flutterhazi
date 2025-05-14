@@ -11,25 +11,20 @@ part 'list_event.dart';
 part 'list_state.dart';
 
 class ListBloc extends Bloc<ListEvent, ListState> {
-  
- final String? token; // <--- add this
+  final String? token; // <--- add this
 
   ListBloc({this.token}) : super(ListInitial()) {
-
-
     on<ListLoadEvent>((event, emit) async {
-      if(state is ListLoading) {
+      if (state is ListLoading) {
         return;
       }
-      print("LoginSubmitEvent started");
+      print("LoginSubmitEvent started, the token is $token");
       final dio = GetIt.I<Dio>();
-      final sharedPreferences = GetIt.I<SharedPreferences>();
       print("Dio and SharedPreferences retrieved");
 
       try {
         print("Making request");
-        dio.options.headers['Authorization'] =
-            'Bearer ${sharedPreferences.getString('token')}';
+        dio.options.headers['Authorization'] = 'Bearer $token';
         emit(ListLoading());
         final response = await dio.get('/users');
 
@@ -41,12 +36,12 @@ class ListBloc extends Bloc<ListEvent, ListState> {
               userJson['avatarUrl'] as String,
             );
           }).toList();
-
+          print("Response received: ${response.data}");
           emit(ListLoaded(users));
         } else {
           print(response.data['message']);
-          emit(ListError(response.data['message'] ??
-              'Hiba a lista lekérdezése során'));
+          emit(ListError(
+              response.data['message'] ?? 'Hiba a lista lekérdezése során'));
         }
       } on DioException catch (dioError) {
         print(dioError.response?.data['message']);
